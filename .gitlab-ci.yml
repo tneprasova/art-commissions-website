@@ -1,0 +1,30 @@
+stages:
+  - build
+  - test
+
+default:
+  image: gradle:jdk17
+
+before_script:
+  - echo -e "\e[1;32mStarting the pipeline\e[0m"
+  - export GRADLE_USER_HOME="$(pwd)/.gradle"
+
+cache:
+  paths:
+    - .gradle/wrapper
+    - .gradle/caches
+
+package:
+  stage: build
+  script:
+    - echo -e "\e[1;32mBuilding the application\e[0m"
+    - ./gradlew clean assemble
+
+test:
+  stage: test
+  script:
+    - echo -e "\e[1;32mTesting the application\e[0m"
+    - ./gradlew check
+
+after_script:
+  - echo -e "\e[1;32mThe pipeline has finished\e[0m"
