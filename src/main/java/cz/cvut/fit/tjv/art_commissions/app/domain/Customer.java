@@ -1,5 +1,7 @@
 package cz.cvut.fit.tjv.art_commissions.app.domain;
 
+import com.sun.istack.NotNull;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -14,6 +16,7 @@ public class Customer implements DomainEntity<Long> {
     // Attributes -----------------------------------------------------------------------------------------------------
     @Id
     private long id;
+    @NotNull
     private String name;
 
     // Relations ------------------------------------------------------------------------------------------------------
@@ -73,5 +76,14 @@ public class Customer implements DomainEntity<Long> {
         Customer customer = (Customer) obj;
 
         return getId() != null ? getId().equals(customer.getId()) : customer.getId() == null;
+    }
+
+    @Override
+    public String toString() {
+        return "Customer {" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", commissions=" + commissions +
+                '}';
     }
 }

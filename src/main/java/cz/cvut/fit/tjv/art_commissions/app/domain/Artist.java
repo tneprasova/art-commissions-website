@@ -1,8 +1,11 @@
 package cz.cvut.fit.tjv.art_commissions.app.domain;
 
+import com.sun.istack.NotNull;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
@@ -14,26 +17,33 @@ public class Artist implements DomainEntity<Long> {
     // Attributes -----------------------------------------------------------------------------------------------------
     @Id
     private long id;
+    @NotNull
     private String name;
+    @NotNull
     private int pricePerHour;
+    @NotNull
     private ArtType artType;
 
     // Relations ------------------------------------------------------------------------------------------------------
     @ManyToMany(mappedBy = "commissioners")
     private Set<Commission> commissions = new HashSet<>();
 
+    @OneToMany
+    private Set<Artist> coworkers = new HashSet<>();
+
     // Constructors ---------------------------------------------------------------------------------------------------
     public Artist() {}
 
-    public Artist(long id, String name, int pricePerHour, ArtType artType) {
+    public Artist(long id, String name, int pricePerHour, ArtType artType, Collection<Artist> coworkers) {
         this.id = id;
         this.name = Objects.requireNonNull(name);
         this.artType = artType;
+        this.coworkers.addAll(coworkers);
 
         if (pricePerHour < 0)
-            this.pricePerHour = pricePerHour;
-        else
             throw new IllegalArgumentException("Artist's price per hour cannot be a negative number");
+        else
+            this.pricePerHour = pricePerHour;
     }
 
     // Getters and setters --------------------------------------------------------------------------------------------
@@ -70,6 +80,15 @@ public class Artist implements DomainEntity<Long> {
         this.commissions.addAll(commissions);
     }
 
+    public Collection<Artist> getCoworkers() {
+        return coworkers;
+    }
+
+    public void setCoworkers(Collection<Artist> coworkers) {
+        this.coworkers.clear();
+        this.coworkers.addAll(coworkers);
+    }
+
     // Overrides ------------------------------------------------------------------------------------------------------
     @Override
     public Long getId() {
@@ -97,5 +116,16 @@ public class Artist implements DomainEntity<Long> {
         Artist artist = (Artist) obj;
 
         return getId() != null ? getId().equals(artist.getId()) : artist.getId() == null;
+    }
+
+    @Override
+    public String toString() {
+        return "Artist {" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", pricePerHour=" + pricePerHour +
+                ", artType=" + artType +
+                ", commissions=" + commissions +
+                '}';
     }
 }

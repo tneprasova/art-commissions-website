@@ -1,5 +1,7 @@
 package cz.cvut.fit.tjv.art_commissions.app.domain;
 
+import com.sun.istack.NotNull;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Collection;
@@ -13,11 +15,16 @@ public class Commission implements DomainEntity<Long> {
     // Attributes -----------------------------------------------------------------------------------------------------
     @Id
     private long id;
+    @NotNull
     private ArtType artType;
     private String description;
+    @NotNull
     private int estimatedHours;
+    @NotNull
     private int price;
+    @NotNull
     private LocalDate issuingDate;
+    @NotNull
     private LocalDate estimatedEndDate;
 
     // Relations ------------------------------------------------------------------------------------------------------
@@ -61,8 +68,23 @@ public class Commission implements DomainEntity<Long> {
     }
 
     public void addCommissioner(Artist commissioner) {
-        this.commissioners.add(commissioner);
-        updatePrice();
+        if (commissioners.contains(commissioner))
+            throw new CommissionException("The artist with ID " + commissioner.getId() + " is already assigned to this commission");
+
+        if (commissioner.getArtType() != artType)
+            throw new CommissionException("The artist with ID " + commissioner.getId() + " does not specialize in " + artType);
+
+        for (var artist : this.commissioners) {
+            if (artist.getCoworkers().contains(commissioner)) {
+                this.commissioners.add(commissioner);
+                updatePrice();
+                return;
+            }
+        }
+        throw new CommissionException(
+                "The artist with ID " + commissioner.getId() +
+                " does not collaborate with any of the commissioners assigned to this commission"
+        );
     }
 
     // Getters and setters --------------------------------------------------------------------------------------------
@@ -155,5 +177,20 @@ public class Commission implements DomainEntity<Long> {
         Commission commission = (Commission) obj;
 
         return getId() != null ? getId().equals(commission.getId()) : commission.getId() == null;
+    }
+
+    @Override
+    public String toString() {
+        return "Commission {" +
+                "id=" + id +
+                ", artType=" + artType +
+                ", description='" + description + '\'' +
+                ", estimatedHours=" + estimatedHours +
+                ", price=" + price +
+                ", issuingDate=" + issuingDate +
+                ", estimatedEndDate=" + estimatedEndDate +
+                ", creator=" + creator +
+                ", commissioners=" + commissioners +
+                '}';
     }
 }
