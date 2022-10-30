@@ -1,8 +1,8 @@
 package cz.cvut.fit.tjv.art_commissions.app.dao.in_memory;
 
 import cz.cvut.fit.tjv.art_commissions.app.dao.ArtistRepository;
+import cz.cvut.fit.tjv.art_commissions.app.domain.ArtType;
 import cz.cvut.fit.tjv.art_commissions.app.domain.Artist;
-import cz.cvut.fit.tjv.art_commissions.app.domain.Commission;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -11,7 +11,22 @@ import java.util.*;
 @Component
 public class ArtistInMemRepository extends InMemoryRepository<Artist, Long> implements ArtistRepository {
     @Override
-    public Collection<Commission> findByEstimatedEndDateGreaterThan(LocalDate date) {
+    public Collection<Artist> readAllByActiveCommissionsToDate(LocalDate date) {
         return null;  // TODO - return all artists with the number of their ongoing commissions
+    }
+
+    @Override
+    public Collection<Artist> readAllOrderByPricePerHour() {
+        return null;
+    }
+
+    @Override
+    public Collection<Artist> readAllByArtType(ArtType artType) {
+        return findAll().stream().filter(artist -> artist.getArtType().equals(artType)).toList();
+    }
+
+    @Override
+    public Collection<Artist> readAllByName(String name) {
+        return findAll().stream().filter(artist -> artist.getName().equals(name)).toList();
     }
 }
