@@ -1,27 +1,16 @@
 package cz.cvut.fit.tjv.art_commissions.app.domain;
 
-import com.sun.istack.NotNull;
-
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import java.util.Collection;
-import java.util.HashSet;
+import javax.persistence.*;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 public class Customer implements DomainEntity<Long> {
 
     // Attributes -----------------------------------------------------------------------------------------------------
     @Id
+    @Column(name = "customer_id")
     private long id;
-    @NotNull
     private String name;
-
-    // Relations ------------------------------------------------------------------------------------------------------
-    @OneToMany(mappedBy = "creator")
-    private Set<Commission> commissions = new HashSet<>();
 
     // Constructors ---------------------------------------------------------------------------------------------------
     public Customer() {}
@@ -38,15 +27,6 @@ public class Customer implements DomainEntity<Long> {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Collection<Commission> getCommissions() {
-        return commissions;
-    }
-
-    public void setCommissions(Collection<Commission> commissions) {
-        this.commissions.clear();
-        this.commissions.addAll(commissions);
     }
 
     // Overrides ------------------------------------------------------------------------------------------------------
@@ -82,8 +62,6 @@ public class Customer implements DomainEntity<Long> {
     public String toString() {
         return "Customer {" +
                 "id=" + id +
-                ", name='" + name + '\'' +
-                ", commissions=" + commissions +
-                '}';
+                ", name='" + name + '\'';
     }
 }

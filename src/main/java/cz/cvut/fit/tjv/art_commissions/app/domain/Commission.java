@@ -1,7 +1,5 @@
 package cz.cvut.fit.tjv.art_commissions.app.domain;
 
-import com.sun.istack.NotNull;
-
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Collection;
@@ -14,26 +12,23 @@ public class Commission implements DomainEntity<Long> {
 
     // Attributes -----------------------------------------------------------------------------------------------------
     @Id
+    @Column(name = "commission_id")
     private long id;
-    @NotNull
     private ArtType artType;
     private String description;
-    @NotNull
     private int estimatedHours;
-    @NotNull
     private int price;
-    @NotNull
     private LocalDate issuingDate;
-    @NotNull
     private LocalDate estimatedEndDate;
 
     // Relations ------------------------------------------------------------------------------------------------------
     @ManyToOne
+    @JoinColumn(name = "creator_id")
     private Customer creator;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            name = "commission_artist",
+            name = "artist_commission",
             joinColumns = @JoinColumn(name = "commission_id"),
             inverseJoinColumns = @JoinColumn(name = "artist_id")
     )
@@ -75,12 +70,13 @@ public class Commission implements DomainEntity<Long> {
             throw new CommissionException("The artist with ID " + commissioner.getId() + " does not specialize in " + artType);
 
         for (var artist : this.commissioners) {
-            if (artist.getCoworkers().contains(commissioner)) {
+            if (artist.getCoworkers().contains(commissioner) || commissioner.getCoworkers().contains(artist)) {
                 this.commissioners.add(commissioner);
                 updatePrice();
                 return;
             }
         }
+
         throw new CommissionException(
                 "The artist with ID " + commissioner.getId() +
                 " does not collaborate with any of the commissioners assigned to this commission"

@@ -1,11 +1,6 @@
 package cz.cvut.fit.tjv.art_commissions.app.domain;
 
-import com.sun.istack.NotNull;
-
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
@@ -16,19 +11,17 @@ public class Artist implements DomainEntity<Long> {
 
     // Attributes -----------------------------------------------------------------------------------------------------
     @Id
+    @Column(name = "artist_id")
     private long id;
-    @NotNull
     private String name;
-    @NotNull
     private int pricePerHour;
-    @NotNull
     private ArtType artType;
 
     // Relations ------------------------------------------------------------------------------------------------------
     @ManyToMany(mappedBy = "commissioners")
-    private Set<Commission> commissions = new HashSet<>();
+    private Collection<Commission> commissions;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<Artist> coworkers = new HashSet<>();
 
     // Constructors ---------------------------------------------------------------------------------------------------
@@ -69,15 +62,6 @@ public class Artist implements DomainEntity<Long> {
 
     public void setArtType(ArtType artType) {
         this.artType = artType;
-    }
-
-    public Collection<Commission> getCommissions() {
-        return commissions;
-    }
-
-    public void setCommissions(Collection<Commission> commissions) {
-        this.commissions.clear();
-        this.commissions.addAll(commissions);
     }
 
     public Collection<Artist> getCoworkers() {
@@ -124,8 +108,6 @@ public class Artist implements DomainEntity<Long> {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", pricePerHour=" + pricePerHour +
-                ", artType=" + artType +
-                ", commissions=" + commissions +
-                '}';
+                ", artType=" + artType;
     }
 }
