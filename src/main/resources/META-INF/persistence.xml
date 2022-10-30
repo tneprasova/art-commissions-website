@@ -1,0 +1,12 @@
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence" version="2.1">
+    <persistence-unit name="SNh2" transaction-type="RESOURCE_LOCAL">
+        <class>cz.cvut.fit.tjv.art_commissions.app.domain.Customer</class>
+        <class>cz.cvut.fit.tjv.art_commissions.app.domain.Artist</class>
+        <class>cz.cvut.fit.tjv.art_commissions.app.domain.Commission</class>
+        <properties>
+            <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:h2:mem:artcommissions;DB_CLOSE_DELAY=-1"/>
+            <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
+        </properties>
+    </persistence-unit>
+</persistence>
