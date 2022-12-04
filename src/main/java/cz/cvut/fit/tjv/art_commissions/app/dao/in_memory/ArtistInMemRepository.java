@@ -8,16 +8,16 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.util.*;
 
-@Component
+//@Component
 public class ArtistInMemRepository extends InMemoryRepository<Artist, Long> implements ArtistRepository {
     @Override
     public Collection<Artist> readAllByActiveCommissionsToDate(LocalDate date) {
-        return null;  // TODO - return all artists with the number of their ongoing commissions
+        return null;
     }
 
     @Override
     public Collection<Artist> readAllOrderByPricePerHour() {
-        return null;
+        return findAll().stream().sorted(Comparator.comparingInt(Artist::getPricePerHour)).toList();
     }
 
     @Override
