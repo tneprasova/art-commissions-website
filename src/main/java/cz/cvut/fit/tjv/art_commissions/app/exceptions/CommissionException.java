@@ -1,4 +1,4 @@
-package cz.cvut.fit.tjv.art_commissions.app.domain;
+package cz.cvut.fit.tjv.art_commissions.app.exceptions;
 
 
 public class CommissionException extends RuntimeException {
