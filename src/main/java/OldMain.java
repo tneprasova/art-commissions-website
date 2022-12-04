@@ -10,16 +10,16 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 
-public class Main {
-    public static void main(String[] args) {
-        var customer1 = new Customer(LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond(), "Bob");
-        var customer2 = new Customer(LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond() + 1, "Alice");
+public class OldMain {
+    public static void oldMain(String[] args) {
+        var customer1 = new Customer(LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond(), "Bob", null);
+        var customer2 = new Customer(LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond() + 1, "Alice", null);
         var artist1 = new Artist(LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond() + 2,
-                "John", 200, ArtType.SKETCHING, List.of());
+                "John", 200, ArtType.SKETCHING, null, null);
         var artist2 = new Artist(LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond() + 3,
-                "Jane", 200, ArtType.DIGITAL_ART, List.of());
+                "Jane", 200, ArtType.DIGITAL_ART, null, null);
         var artist4 = new Artist(LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond() + 7,
-                "Sad Clown", 150, ArtType.CROCHETING, List.of());
+                "Sad Clown", 150, ArtType.CROCHETING, null, null);
         var commission1 = new Commission(LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond() + 4,
                 ArtType.DIGITAL_ART, "Pixel art panda", Difficulty.MEDIUM, LocalDate.now(), customer1, List.of(artist2));
         var commission2 = new Commission(LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond() + 5,
@@ -64,7 +64,8 @@ public class Main {
         System.out.println("Database after:  " + cusSvc.readAll());
 
         System.out.println("\n\u001B[1;33m" + "Add a new coworker to artist " + artist2.getId() + "\u001B[0m");
-        Artist artist3 = new Artist(LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond() + 8, "Harry", 300, ArtType.DIGITAL_ART, List.of(artist2));
+        Artist artist3 = new Artist(LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond() + 8,
+                "Harry", 300, ArtType.DIGITAL_ART, List.of(artist2), null);
         artSvc.create(artist3);
         System.out.println("Creating and adding artist " + artist3.getId());
 
