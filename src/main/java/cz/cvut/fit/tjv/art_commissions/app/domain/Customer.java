@@ -1,6 +1,7 @@
 package cz.cvut.fit.tjv.art_commissions.app.domain;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.Objects;
 
 @Entity
@@ -8,16 +9,22 @@ public class Customer implements DomainEntity<Long> {
 
     // Attributes -----------------------------------------------------------------------------------------------------
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "customer_id")
     private long id;
     private String name;
 
+    // Relations ------------------------------------------------------------------------------------------------------
+    @OneToMany(mappedBy = "creator")
+    Collection<Commission> myCommissions;
+
     // Constructors ---------------------------------------------------------------------------------------------------
     public Customer() {}
 
-    public Customer(Long id, String name) {
+    public Customer(Long id, String name, Collection<Commission> myCommissions) {
         this.id = id;
         this.name = Objects.requireNonNull(name);
+        this.myCommissions = myCommissions;
     }
 
     // Getters and setters --------------------------------------------------------------------------------------------
@@ -27,6 +34,14 @@ public class Customer implements DomainEntity<Long> {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Collection<Commission> getMyCommissions() {
+        return myCommissions;
+    }
+
+    public void setMyCommissions(Collection<Commission> myCommissions) {
+        this.myCommissions = myCommissions;
     }
 
     // Overrides ------------------------------------------------------------------------------------------------------

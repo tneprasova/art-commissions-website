@@ -11,6 +11,7 @@ public class Artist implements DomainEntity<Long> {
 
     // Attributes -----------------------------------------------------------------------------------------------------
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "artist_id")
     private long id;
     private String name;
@@ -21,17 +22,20 @@ public class Artist implements DomainEntity<Long> {
     @ManyToMany(mappedBy = "commissioners")
     private Collection<Commission> commissions;
 
+    //TODO solve this self-referencing relation, ideally make it bidirectional
     @OneToMany(fetch = FetchType.EAGER)
     private Set<Artist> coworkers = new HashSet<>();
 
     // Constructors ---------------------------------------------------------------------------------------------------
     public Artist() {}
 
-    public Artist(long id, String name, int pricePerHour, ArtType artType, Collection<Artist> coworkers) {
+    public Artist(long id, String name, int pricePerHour, ArtType artType,
+                  Collection<Artist> coworkers, Collection<Commission> commissions) {
         this.id = id;
         this.name = Objects.requireNonNull(name);
         this.artType = artType;
-        this.coworkers.addAll(coworkers);
+        addCoworkers(coworkers);
+        this.commissions = commissions;
 
         if (pricePerHour < 0)
             throw new IllegalArgumentException("Artist's price per hour cannot be a negative number");
@@ -64,6 +68,14 @@ public class Artist implements DomainEntity<Long> {
         this.artType = artType;
     }
 
+    public Collection<Commission> getCommissions() {
+        return commissions;
+    }
+
+    public void setCommissions(Collection<Commission> commissions) {
+        this.commissions = commissions;
+    }
+
     public Collection<Artist> getCoworkers() {
         return coworkers;
     }
@@ -71,6 +83,13 @@ public class Artist implements DomainEntity<Long> {
     public void setCoworkers(Collection<Artist> coworkers) {
         this.coworkers.clear();
         this.coworkers.addAll(coworkers);
+    }
+
+    // Custom functions -----------------------------------------------------------------------------------------------
+    public void addCoworkers(Collection<Artist> coworkers) {
+        this.coworkers.addAll(coworkers);
+        for (var artist : coworkers)
+            artist.coworkers.add(this);
     }
 
     // Overrides ------------------------------------------------------------------------------------------------------

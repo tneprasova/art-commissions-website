@@ -7,7 +7,12 @@ public enum Difficulty {
 
     public final int hours;
 
-    private Difficulty(int hours) {
+    Difficulty(int hours) {
         this.hours = hours;
+    }
+
+    @Override
+    public String toString() {
+        return "Difficulty=" + name().toLowerCase();
     }
 }

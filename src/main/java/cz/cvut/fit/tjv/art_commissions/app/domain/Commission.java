@@ -1,5 +1,7 @@
 package cz.cvut.fit.tjv.art_commissions.app.domain;
 
+import cz.cvut.fit.tjv.art_commissions.app.exceptions.CommissionException;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Collection;
@@ -12,6 +14,7 @@ public class Commission implements DomainEntity<Long> {
 
     // Attributes -----------------------------------------------------------------------------------------------------
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "commission_id")
     private long id;
     private ArtType artType;
