@@ -18,7 +18,6 @@ public abstract class AbstractCrudService<Entity extends DomainEntity<ID>, ID> {
         this.repository = repository;
     }
 
-    // CRUD -----------------------------------------------------------------------------------------------------------
     @Transactional
     public Entity create(Entity entity) throws EntityDoesNotExistException {
         if (repository.existsById(entity.getId()))
@@ -28,6 +27,9 @@ public abstract class AbstractCrudService<Entity extends DomainEntity<ID>, ID> {
     }
 
     public Optional<Entity> readById(ID id) {
+        if (id == null)
+            return Optional.empty();
+
         return repository.findById(id);
     }
 
@@ -40,11 +42,11 @@ public abstract class AbstractCrudService<Entity extends DomainEntity<ID>, ID> {
     }
 
     @Transactional
-    public Entity update(Entity entity) throws EntityDoesNotExistException {
-        if (repository.existsById(entity.getId()))
-            return repository.save(entity);
-        else
+    public void update(ID id, Entity entity) throws EntityDoesNotExistException {
+        if (!repository.existsById(id))
             throw new EntityDoesNotExistException("Cannot update a nonexistent entity");
+
+        repository.save(entity);
     }
 
     @Transactional
