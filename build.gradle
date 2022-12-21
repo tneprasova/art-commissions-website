@@ -23,15 +23,14 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    runtimeOnly 'com.h2database:h2'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.13'
+    runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'com.microsoft.sqlserver:mssql-jdbc'
     compileOnly 'org.projectlombok:lombok'
-    runtimeOnly 'org.springdoc:springdoc-openapi-ui:1.6.12'
-    runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.projectlombok:lombok'
 }
 
-// Connects Gradle and JUnit together
 test {
     useJUnitPlatform()
 }

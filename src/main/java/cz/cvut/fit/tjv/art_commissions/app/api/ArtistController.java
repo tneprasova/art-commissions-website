@@ -1,10 +1,14 @@
 package cz.cvut.fit.tjv.art_commissions.app.api;
 
-import cz.cvut.fit.tjv.art_commissions.app.api.model.ArtistDto;
+import cz.cvut.fit.tjv.art_commissions.app.api.model.dto.ArtistDto;
 import cz.cvut.fit.tjv.art_commissions.app.api.model.converter.ArtistConverter;
+import cz.cvut.fit.tjv.art_commissions.app.api.model.dto.ArtistPostDto;
 import cz.cvut.fit.tjv.art_commissions.app.business.ArtistService;
+import cz.cvut.fit.tjv.art_commissions.app.business.CommissionService;
 import cz.cvut.fit.tjv.art_commissions.app.domain.ArtType;
 import cz.cvut.fit.tjv.art_commissions.app.domain.Artist;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -13,15 +17,25 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/v1/artists")
-public class ArtistController extends AbstractCrudController<Artist, ArtistDto, Long> {
-    public ArtistController(ArtistService service, ArtistConverter converter) {
+public class ArtistController extends AbstractCrudController<Artist, ArtistDto, ArtistPostDto, Long> {
+    CommissionService commissionService;
+    public ArtistController(ArtistService service, ArtistConverter converter, CommissionService commissionService) {
         super(service, converter);
+        this.commissionService = commissionService;
     }
 
     @GetMapping
-    public Collection<ArtistDto> readAll(@RequestParam Optional<String> name,
-                                         @RequestParam Optional<String> art_type,
-                                         @RequestParam Optional<String> order_by) {
+    public Collection<ArtistDto> readAll(
+            @Parameter(description = "Name of the artist")
+            @RequestParam Optional<String> name,
+            @Parameter(description = "The type of art an artist specializes on")
+            @RequestParam Optional<String> art_type,
+            @Parameter(description = "What to order the artists by", examples = {
+                    @ExampleObject(name = "price", description = "An artist's price per hour", value = "order_by=price"),
+                    @ExampleObject(name = "activeCount", description = "The number of artist's active commissions", value = "order_by=activeCount")
+            })
+            @RequestParam Optional<String> order_by) {
+
         Collection<Artist> ordered;
 
         // Filtering
@@ -43,6 +57,6 @@ public class ArtistController extends AbstractCrudController<Artist, ArtistDto, 
             ordered = service.readAll();
 
         return ordered.stream().filter(a -> filteredByName.contains(a.getId()) && filteredByArtType.contains(a.getId()))
-                .map(entity -> converter.toDto(entity)).toList();
+                .map(entity -> converter.fromEntityToDto(entity)).toList();
     }
 }

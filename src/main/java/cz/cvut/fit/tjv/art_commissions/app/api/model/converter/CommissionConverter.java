@@ -1,12 +1,12 @@
 package cz.cvut.fit.tjv.art_commissions.app.api.model.converter;
 
-import cz.cvut.fit.tjv.art_commissions.app.api.model.CommissionDto;
+import cz.cvut.fit.tjv.art_commissions.app.api.model.dto.CommissionDto;
+import cz.cvut.fit.tjv.art_commissions.app.api.model.dto.CommissionPostDto;
 import cz.cvut.fit.tjv.art_commissions.app.business.ArtistService;
 import cz.cvut.fit.tjv.art_commissions.app.business.CustomerService;
 import cz.cvut.fit.tjv.art_commissions.app.exceptions.EntityDoesNotExistException;
 import cz.cvut.fit.tjv.art_commissions.app.domain.Commission;
 import cz.cvut.fit.tjv.art_commissions.app.domain.Customer;
-import cz.cvut.fit.tjv.art_commissions.app.domain.Difficulty;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 @Component
-public class CommissionConverter extends AbstractConverter<Commission, CommissionDto, Long> {
+public class CommissionConverter extends AbstractConverter<Commission, CommissionDto, CommissionPostDto, Long> {
     public final ArtistService artistService;
     public final CustomerService customerService;
 
@@ -24,7 +24,7 @@ public class CommissionConverter extends AbstractConverter<Commission, Commissio
     }
 
     @Override
-    public CommissionDto toDto(Commission commission) {
+    public CommissionDto fromEntityToDto(Commission commission) {
         Collection<Long> commissionersIds = new ArrayList<>();
         commission.getCommissioners().forEach(c -> commissionersIds.add(c.getId()));
 
@@ -34,12 +34,15 @@ public class CommissionConverter extends AbstractConverter<Commission, Commissio
     }
 
     @Override
-    public Commission toEntity(CommissionDto dto) {
+    public Commission fromPostDtoToEntity(CommissionPostDto dto) {
         Optional<Customer> customer = customerService.readById(dto.getCreator());
         if (customer.isEmpty())
             throw new EntityDoesNotExistException("Nonexistent customer assigned to a commission");
 
-        return new Commission(dto.getId(), dto.getArtType(), dto.getDescription(), Difficulty.EASY, // TODO difficulty
+        if (artistService.readById(dto.getCommissioners()).isEmpty())
+            throw new EntityDoesNotExistException("No artists assigned to the commission");
+
+        return new Commission(dto.getArtType(), dto.getDescription(), dto.getEstimatedHours(),
                 dto.getIssuingDate(), customer.get(), artistService.readById(dto.getCommissioners()));
     }
 }

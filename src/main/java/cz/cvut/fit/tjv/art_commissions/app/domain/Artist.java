@@ -1,40 +1,43 @@
 package cz.cvut.fit.tjv.art_commissions.app.domain;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 public class Artist implements DomainEntity<Long> {
-
-    // Attributes -----------------------------------------------------------------------------------------------------
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "artist_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_artist")
     private long id;
     private String name;
+    @Column(name = "price_per_hour")
     private int pricePerHour;
+    @Column(name = "art_type")
     private ArtType artType;
 
-    // Relations ------------------------------------------------------------------------------------------------------
+    @ManyToOne
+    @JoinColumn(name = "id_coworker")
+    private Artist teacher;
+    @OneToMany(mappedBy = "teacher")
+    private Collection<Artist> apprentices = new HashSet<>();
+
     @ManyToMany(mappedBy = "commissioners")
     private Collection<Commission> commissions;
 
-    //TODO solve this self-referencing relation, ideally make it bidirectional
-    @OneToMany(fetch = FetchType.EAGER)
-    private Set<Artist> coworkers = new HashSet<>();
-
-    // Constructors ---------------------------------------------------------------------------------------------------
-    public Artist() {}
-
-    public Artist(long id, String name, int pricePerHour, ArtType artType,
-                  Collection<Artist> coworkers, Collection<Commission> commissions) {
-        this.id = id;
-        this.name = Objects.requireNonNull(name);
+    public Artist(String name, int pricePerHour, ArtType artType,
+                  Artist teacher, Collection<Artist> apprentices, Collection<Commission> commissions) {
+        this.name = name;
         this.artType = artType;
-        addCoworkers(coworkers);
+        this.teacher = teacher;
+        this.apprentices = apprentices;
         this.commissions = commissions;
 
         if (pricePerHour < 0)
@@ -43,64 +46,15 @@ public class Artist implements DomainEntity<Long> {
             this.pricePerHour = pricePerHour;
     }
 
-    // Getters and setters --------------------------------------------------------------------------------------------
-    public String getName() {
-        return name;
+    // Without this the foreign key of the teacher would stay in the apprentice instances
+    @PreRemove
+    public void deleteArtist() {
+        apprentices.forEach(a -> a.setTeacher(null));
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getPricePerHour() {
-        return pricePerHour;
-    }
-
-    public void setPricePerHour(int pricePerHour) {
-        this.pricePerHour = pricePerHour;
-    }
-
-    public ArtType getArtType() {
-        return artType;
-    }
-
-    public void setArtType(ArtType artType) {
-        this.artType = artType;
-    }
-
-    public Collection<Commission> getCommissions() {
-        return commissions;
-    }
-
-    public void setCommissions(Collection<Commission> commissions) {
-        this.commissions = commissions;
-    }
-
-    public Collection<Artist> getCoworkers() {
-        return coworkers;
-    }
-
-    public void setCoworkers(Collection<Artist> coworkers) {
-        this.coworkers.clear();
-        this.coworkers.addAll(coworkers);
-    }
-
-    // Custom functions -----------------------------------------------------------------------------------------------
-    public void addCoworkers(Collection<Artist> coworkers) {
-        this.coworkers.addAll(coworkers);
-        for (var artist : coworkers)
-            artist.coworkers.add(this);
-    }
-
-    // Overrides ------------------------------------------------------------------------------------------------------
     @Override
     public Long getId() {
         return id;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     @Override

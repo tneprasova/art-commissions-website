@@ -1,6 +1,10 @@
 package cz.cvut.fit.tjv.art_commissions.app.domain;
 
 import cz.cvut.fit.tjv.art_commissions.app.exceptions.CommissionException;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -10,50 +14,55 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 public class Commission implements DomainEntity<Long> {
-
-    // Attributes -----------------------------------------------------------------------------------------------------
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "commission_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_commission")
     private long id;
+    @Column(name = "art_type")
     private ArtType artType;
     private String description;
+    @Column(name = "estimated_hours")
     private int estimatedHours;
-    private int price;
+    @Column(name = "issuing_date")
     private LocalDate issuingDate;
+    @Setter(AccessLevel.NONE)
+    @Column(name = "estimated_end_date")
     private LocalDate estimatedEndDate;
+    @Setter(AccessLevel.NONE)
+    private int price;
 
-    // Relations ------------------------------------------------------------------------------------------------------
     @ManyToOne
-    @JoinColumn(name = "creator_id")
+    @JoinColumn(name = "id_customer")
     private Customer creator;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            name = "artist_commission",
-            joinColumns = @JoinColumn(name = "commission_id"),
-            inverseJoinColumns = @JoinColumn(name = "artist_id")
+            name = "commission_artist",
+            joinColumns = @JoinColumn(name = "id_commission"),
+            inverseJoinColumns = @JoinColumn(name = "id_artist")
     )
     private Set<Artist> commissioners = new HashSet<>();
 
-    // Constructors ---------------------------------------------------------------------------------------------------
-    public Commission() {}
-
-    public Commission(long id, ArtType artType, String description, Difficulty difficulty, LocalDate issuingDate,
+    public Commission(ArtType artType, String description, int hours, LocalDate issuingDate,
                       Customer creator, Collection<Artist> commissioners) {
-        this.id = id;
         this.artType = artType;
         this.description = description;
-        this.estimatedHours = difficulty.hours;
+        this.estimatedHours = hours;
         this.issuingDate = issuingDate;
         this.creator = Objects.requireNonNull(creator);
         this.commissioners.addAll(Objects.requireNonNull(commissioners));
         updatePrice();
         updateEstimatedEndDate();
+
+        if (commissioners.stream().anyMatch(c -> c.getArtType() != this.artType))
+            throw new CommissionException("Cannot add commissioners who specialize on a different art type " +
+                                          "than the commission requires");
     }
 
-    // Custom methods -------------------------------------------------------------------------------------------------
     public void updatePrice() {
         price = 0;
         commissioners.forEach(artist -> price += artist.getPricePerHour() * estimatedHours);
@@ -72,53 +81,14 @@ public class Commission implements DomainEntity<Long> {
         if (commissioner.getArtType() != artType)
             throw new CommissionException("The artist with ID " + commissioner.getId() + " does not specialize in " + artType);
 
-        for (var artist : this.commissioners) {
-            if (artist.getCoworkers().contains(commissioner) || commissioner.getCoworkers().contains(artist)) {
-                this.commissioners.add(commissioner);
-                updatePrice();
-                return;
-            }
-        }
-
-        throw new CommissionException(
-                "The artist with ID " + commissioner.getId() +
-                " does not collaborate with any of the commissioners assigned to this commission"
-        );
+        this.commissioners.add(commissioner);
+        updatePrice();
     }
 
-    // Getters and setters --------------------------------------------------------------------------------------------
-    public ArtType getArtType() {
-        return artType;
-    }
-
-    public void setArtType(ArtType artType) {
-        this.artType = artType;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public int getEstimatedHours() {
-        return estimatedHours;
-    }
-
-    public void setEstimatedHours(Difficulty difficulty) {
-        this.estimatedHours = difficulty.hours;
+    public void setEstimatedHours(int hours) {
+        this.estimatedHours = hours;
         updatePrice();
         updateEstimatedEndDate();
-    }
-
-    public int getPrice() {
-        return price;
-    }
-
-    public LocalDate getIssuingDate() {
-        return issuingDate;
     }
 
     public void setIssuingDate(LocalDate issuingDate) {
@@ -127,37 +97,14 @@ public class Commission implements DomainEntity<Long> {
         updateEstimatedEndDate();
     }
 
-    public LocalDate getEstimatedEndDate() {
-        return estimatedEndDate;
-    }
-
-    public Customer getCreator() {
-        return creator;
-    }
-
-    public void setCreator(Customer creator) {
-        this.creator = creator;
-    }
-
-    public Collection<Artist> getCommissioners() {
-        return commissioners;
-    }
-
-    public void setCommissioners(Collection<Artist> commissioners) {
-        this.commissioners.clear();
-        this.commissioners.addAll(commissioners);
+    public void setCommissioners(Set<Artist> commissioners) {
+        this.commissioners = commissioners;
         updatePrice();
     }
 
-    // Overrides ------------------------------------------------------------------------------------------------------
     @Override
     public Long getId() {
         return id;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     @Override
@@ -184,7 +131,7 @@ public class Commission implements DomainEntity<Long> {
                 "id=" + id +
                 ", artType=" + artType +
                 ", description='" + description + '\'' +
-                ", estimatedHours=" + estimatedHours +
+                ", estimatedDays=" + estimatedHours +
                 ", price=" + price +
                 ", issuingDate=" + issuingDate +
                 ", estimatedEndDate=" + estimatedEndDate +

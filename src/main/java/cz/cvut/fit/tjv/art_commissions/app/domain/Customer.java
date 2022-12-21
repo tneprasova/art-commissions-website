@@ -1,58 +1,33 @@
 package cz.cvut.fit.tjv.art_commissions.app.domain;
 
+import lombok.*;
+
 import javax.persistence.*;
 import java.util.Collection;
-import java.util.Objects;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 public class Customer implements DomainEntity<Long> {
-
-    // Attributes -----------------------------------------------------------------------------------------------------
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "customer_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_customer")
+    @Setter(AccessLevel.NONE)
     private long id;
     private String name;
 
-    // Relations ------------------------------------------------------------------------------------------------------
     @OneToMany(mappedBy = "creator")
     Collection<Commission> myCommissions;
 
-    // Constructors ---------------------------------------------------------------------------------------------------
-    public Customer() {}
-
-    public Customer(Long id, String name, Collection<Commission> myCommissions) {
-        this.id = id;
-        this.name = Objects.requireNonNull(name);
-        this.myCommissions = myCommissions;
-    }
-
-    // Getters and setters --------------------------------------------------------------------------------------------
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
+    public Customer(String name, Collection<Commission> myCommissions) {
         this.name = name;
-    }
-
-    public Collection<Commission> getMyCommissions() {
-        return myCommissions;
-    }
-
-    public void setMyCommissions(Collection<Commission> myCommissions) {
         this.myCommissions = myCommissions;
     }
 
-    // Overrides ------------------------------------------------------------------------------------------------------
     @Override
     public Long getId() {
         return id;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     @Override
