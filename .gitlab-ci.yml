@@ -3,7 +3,7 @@ stages:
   - test
 
 default:
-  image: gradle:jdk17
+  image: gitlab.fit.cvut.cz:5000/neprater/image-build-test/gradle:jdk17-alpine
 
 before_script:
   - export GRADLE_USER_HOME="$(pwd)/.gradle"
