@@ -1,6 +1,6 @@
 package cz.cvut.fit.tjv.art_commissions.app.business;
 
-import cz.cvut.fit.tjv.art_commissions.app.dao.jpa.ArtistJpaRepository;
+import cz.cvut.fit.tjv.art_commissions.app.dao.ArtistRepository;
 import cz.cvut.fit.tjv.art_commissions.app.domain.ArtType;
 import cz.cvut.fit.tjv.art_commissions.app.domain.Artist;
 import cz.cvut.fit.tjv.art_commissions.app.domain.Commission;
@@ -18,7 +18,7 @@ public class ArtistService extends AbstractCrudService<Artist, Long> {
 
     private CommissionService commissionService;
     private EntityManager entityManager;
-    protected ArtistService(ArtistJpaRepository repository, CommissionService commissionService,
+    protected ArtistService(ArtistRepository repository, CommissionService commissionService,
                             EntityManager entityManager) {
         super(repository);
         this.commissionService = commissionService;
@@ -26,19 +26,19 @@ public class ArtistService extends AbstractCrudService<Artist, Long> {
     }
 
     public Collection<Artist> orderByActiveCommissionsToDate(LocalDate date) {
-        return ((ArtistJpaRepository) repository).readAllByActiveCommissionsToDate(date);
+        return ((ArtistRepository) repository).readAllByActiveCommissionsToDate(date);
     }
 
     public Collection<Artist> orderByPrice() {
-        return ((ArtistJpaRepository) repository).readAllOrderByPricePerHour();
+        return ((ArtistRepository) repository).readAllOrderByPricePerHour();
     }
 
     public Collection<Artist> filterByArtType(ArtType artType) {
-        return ((ArtistJpaRepository) repository).readAllByArtType(artType);
+        return ((ArtistRepository) repository).readAllByArtType(artType);
     }
 
     public Collection<Artist> filterByName(String name) {
-        return ((ArtistJpaRepository) repository).readAllByName(name);
+        return ((ArtistRepository) repository).readAllByName(name);
     }
 
     @Override
