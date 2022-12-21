@@ -2,7 +2,6 @@ package cz.cvut.fit.tjv.art_commissions.app.business;
 
 import cz.cvut.fit.tjv.art_commissions.app.dao.CrudRepository;
 import cz.cvut.fit.tjv.art_commissions.app.domain.DomainEntity;
-import cz.cvut.fit.tjv.art_commissions.app.exceptions.EntityAlreadyExistsException;
 import cz.cvut.fit.tjv.art_commissions.app.exceptions.EntityDoesNotExistException;
 
 import javax.transaction.Transactional;
@@ -20,9 +19,6 @@ public abstract class AbstractCrudService<Entity extends DomainEntity<ID>, ID> {
 
     @Transactional
     public Entity create(Entity entity) throws EntityDoesNotExistException {
-        if (repository.existsById(entity.getId()))
-            throw new EntityAlreadyExistsException("Cannot create an entity which already exists");
-
         return repository.save(entity);
     }
 
@@ -42,18 +38,18 @@ public abstract class AbstractCrudService<Entity extends DomainEntity<ID>, ID> {
     }
 
     @Transactional
-    public void update(ID id, Entity entity) throws EntityDoesNotExistException {
+    public void update(ID id, Entity entity) {
         if (!repository.existsById(id))
-            throw new EntityDoesNotExistException("Cannot update a nonexistent entity");
+            throw new EntityDoesNotExistException("Cannot update an entity with nonexistent ID");
 
         repository.save(entity);
     }
 
     @Transactional
     public void deleteById(ID id) {
-        if (repository.existsById(id))
-            repository.deleteById(id);
-        else
-            throw new EntityDoesNotExistException("Cannot delete a nonexistent entity");
+        if (!repository.existsById(id))
+            throw new EntityDoesNotExistException("Cannot delete an entity with nonexistent ID");
+
+        repository.deleteById(id);
     }
 }
