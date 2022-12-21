@@ -17,6 +17,4 @@ public class ArtistPostDto {
     private Collection<Long> commissions;
     private Long teacher;
     private Collection<Long> apprentices;
-
-    public Long getTeacher() { return this.teacher; }
 }

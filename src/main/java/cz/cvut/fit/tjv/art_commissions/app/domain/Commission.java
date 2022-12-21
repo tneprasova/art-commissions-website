@@ -10,7 +10,6 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -49,18 +48,21 @@ public class Commission implements DomainEntity<Long> {
 
     public Commission(ArtType artType, String description, int hours, LocalDate issuingDate,
                       Customer creator, Collection<Artist> commissioners) {
+        if (hours <= 0)
+            throw new CommissionException("The estimated hours of a commission must be a positive number");
+
+        else if (commissioners.stream().anyMatch(c -> c.getArtType() != artType))
+            throw new CommissionException("Cannot create a commission assigned to commissioner, " +
+                                          "who specializes on a different art type");
+
         this.artType = artType;
         this.description = description;
         this.estimatedHours = hours;
         this.issuingDate = issuingDate;
-        this.creator = Objects.requireNonNull(creator);
-        this.commissioners.addAll(Objects.requireNonNull(commissioners));
+        this.creator = creator;
+        this.commissioners.addAll(commissioners);
         updatePrice();
         updateEstimatedEndDate();
-
-        if (commissioners.stream().anyMatch(c -> c.getArtType() != this.artType))
-            throw new CommissionException("Cannot add commissioners who specialize on a different art type " +
-                                          "than the commission requires");
     }
 
     public void updatePrice() {
@@ -76,12 +78,19 @@ public class Commission implements DomainEntity<Long> {
 
     public void addCommissioner(Artist commissioner) {
         if (commissioners.contains(commissioner))
-            throw new CommissionException("The artist with ID " + commissioner.getId() + " is already assigned to this commission");
+            throw new CommissionException("The artist with ID " + commissioner.getId() +
+                                          " is already assigned to commission with ID " + this.id);
 
         if (commissioner.getArtType() != artType)
-            throw new CommissionException("The artist with ID " + commissioner.getId() + " does not specialize in " + artType);
+            throw new CommissionException("The artist with ID " + commissioner.getId() +
+                                          " does not specialize in the art type of the commission with ID " + this.id);
 
         this.commissioners.add(commissioner);
+        updatePrice();
+    }
+
+    public void removeCommissioner(Artist commissioner) {
+        this.commissioners.remove(commissioner);
         updatePrice();
     }
 
@@ -108,6 +117,11 @@ public class Commission implements DomainEntity<Long> {
     }
 
     @Override
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @Override
     public int hashCode() {
         return getId() != null ? getId().hashCode() : 0;
     }
@@ -123,20 +137,5 @@ public class Commission implements DomainEntity<Long> {
         Commission commission = (Commission) obj;
 
         return getId() != null ? getId().equals(commission.getId()) : commission.getId() == null;
-    }
-
-    @Override
-    public String toString() {
-        return "Commission {" +
-                "id=" + id +
-                ", artType=" + artType +
-                ", description='" + description + '\'' +
-                ", estimatedDays=" + estimatedHours +
-                ", price=" + price +
-                ", issuingDate=" + issuingDate +
-                ", estimatedEndDate=" + estimatedEndDate +
-                ", creator=" + creator +
-                ", commissioners=" + commissioners +
-                '}';
     }
 }

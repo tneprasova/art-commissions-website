@@ -7,6 +7,9 @@ import cz.cvut.fit.tjv.art_commissions.app.business.CommissionService;
 import cz.cvut.fit.tjv.art_commissions.app.domain.Commission;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -35,5 +38,26 @@ public class CommissionController extends AbstractCrudController<Commission, Com
             return ((CommissionService) service).findMyActiveCommissions(id).stream().map(entity -> converter.fromEntityToDto(entity)).toList();
 
         return ((CommissionService) service).findByCustomerId(id).stream().map(entity -> converter.fromEntityToDto(entity)).toList();
+    }
+
+    @PutMapping("/{idCommission}/artists/{idArtist}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Success with no content provided"),
+            @ApiResponse(responseCode = "400", description = "Received invalid data"),
+            @ApiResponse(responseCode = "404", description = "Attempt to update a nonexistent entity")}
+    )
+    public void addCommissioner(@PathVariable Long idCommission, @PathVariable Long idArtist) {
+        ((CommissionService) service).addCommissioner(idCommission, idArtist);
+    }
+
+    @DeleteMapping("/{idCommission}/artists/{idArtist}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Success with no content provided"),
+            @ApiResponse(responseCode = "404", description = "Attempt to update a nonexistent entity")}
+    )
+    public void removeCommissioner(@PathVariable Long idCommission, @PathVariable Long idArtist) {
+        ((CommissionService) service).removeCommissioner(idCommission, idArtist);
     }
 }

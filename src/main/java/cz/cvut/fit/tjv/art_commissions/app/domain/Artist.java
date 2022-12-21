@@ -1,5 +1,6 @@
 package cz.cvut.fit.tjv.art_commissions.app.domain;
 
+import cz.cvut.fit.tjv.art_commissions.app.exceptions.ArtistException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -34,16 +35,17 @@ public class Artist implements DomainEntity<Long> {
 
     public Artist(String name, int pricePerHour, ArtType artType,
                   Artist teacher, Collection<Artist> apprentices, Collection<Commission> commissions) {
+        if (name.isEmpty())
+            throw new ArtistException("The artist's name must be a nonempty string");
+        else if (pricePerHour < 0)
+            throw new ArtistException("Artist's price per hour cannot be a negative number");
+
         this.name = name;
+        this.pricePerHour = pricePerHour;
         this.artType = artType;
         this.teacher = teacher;
         this.apprentices = apprentices;
         this.commissions = commissions;
-
-        if (pricePerHour < 0)
-            throw new IllegalArgumentException("Artist's price per hour cannot be a negative number");
-        else
-            this.pricePerHour = pricePerHour;
     }
 
     // Without this the foreign key of the teacher would stay in the apprentice instances
@@ -55,6 +57,11 @@ public class Artist implements DomainEntity<Long> {
     @Override
     public Long getId() {
         return id;
+    }
+
+    @Override
+    public void setId(Long id) {
+        this.id = id;
     }
 
     @Override
@@ -73,14 +80,5 @@ public class Artist implements DomainEntity<Long> {
         Artist artist = (Artist) obj;
 
         return getId() != null ? getId().equals(artist.getId()) : artist.getId() == null;
-    }
-
-    @Override
-    public String toString() {
-        return "Artist {" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", pricePerHour=" + pricePerHour +
-                ", artType=" + artType;
     }
 }
