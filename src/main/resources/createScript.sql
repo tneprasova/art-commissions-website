@@ -1,3 +1,5 @@
+-- This script serves only for manual reinitialization of the database
+
 -- Remove conflicting tables
 DROP TABLE IF EXISTS commission_artist;
 DROP TABLE IF EXISTS commission;

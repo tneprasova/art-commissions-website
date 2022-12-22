@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class CommissionService extends AbstractCrudService<Commission, Long> {
-    ArtistRepository artistRepository;
+    private ArtistRepository artistRepository;
     private EntityManager entityManager;
     public CommissionService(CommissionRepository repository, ArtistRepository artistRepository, EntityManager entityManager) {
         super(repository);

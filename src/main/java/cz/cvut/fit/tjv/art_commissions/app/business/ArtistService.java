@@ -26,7 +26,7 @@ public class ArtistService extends AbstractCrudService<Artist, Long> {
     }
 
     public Collection<Artist> orderByActiveCommissionsToDate(LocalDate date) {
-        return ((ArtistRepository) repository).readAllByActiveCommissionsToDate(date);
+        return ((ArtistRepository) repository).readAllByActiveCommissionsToDateAsc(date);
     }
 
     public Collection<Artist> orderByPrice() {

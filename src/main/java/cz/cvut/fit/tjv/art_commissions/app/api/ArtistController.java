@@ -4,7 +4,6 @@ import cz.cvut.fit.tjv.art_commissions.app.api.model.dto.ArtistDto;
 import cz.cvut.fit.tjv.art_commissions.app.api.model.converter.ArtistConverter;
 import cz.cvut.fit.tjv.art_commissions.app.api.model.dto.ArtistPostDto;
 import cz.cvut.fit.tjv.art_commissions.app.business.ArtistService;
-import cz.cvut.fit.tjv.art_commissions.app.business.CommissionService;
 import cz.cvut.fit.tjv.art_commissions.app.domain.ArtType;
 import cz.cvut.fit.tjv.art_commissions.app.domain.Artist;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -18,10 +17,8 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/v1/artists")
 public class ArtistController extends AbstractCrudController<Artist, ArtistDto, ArtistPostDto, Long> {
-    CommissionService commissionService;
-    public ArtistController(ArtistService service, ArtistConverter converter, CommissionService commissionService) {
+    public ArtistController(ArtistService service, ArtistConverter converter) {
         super(service, converter);
-        this.commissionService = commissionService;
     }
 
     @GetMapping
