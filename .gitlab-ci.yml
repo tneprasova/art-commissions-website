@@ -1,0 +1,28 @@
+stages:
+  - build
+  - test
+
+default:
+  image: gitlab.fit.cvut.cz:5000/neprater/image-build-test/gradle:jdk17-alpine
+
+before_script:
+  - export GRADLE_USER_HOME="$(pwd)/.gradle"
+
+cache:
+  paths:
+    - .gradle/wrapper
+    - .gradle/caches
+
+build:
+  stage: build
+  script:
+    - echo -e "\e[1;34mBuilding the application\e[0m"
+    - cd server
+    - ./gradlew clean assemble
+
+test:
+  stage: test
+  script:
+    - echo -e "\e[1;34mTesting the application\e[0m"
+    - cd server
+    - ./gradlew check
