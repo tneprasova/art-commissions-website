@@ -17,10 +17,12 @@ build:
   stage: build
   script:
     - echo -e "\e[1;34mBuilding the application\e[0m"
+    - cd server
     - ./gradlew clean assemble
 
 test:
   stage: test
   script:
     - echo -e "\e[1;34mTesting the application\e[0m"
+    - cd server
     - ./gradlew check
