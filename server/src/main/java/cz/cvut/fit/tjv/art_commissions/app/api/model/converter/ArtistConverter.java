@@ -5,6 +5,7 @@ import cz.cvut.fit.tjv.art_commissions.app.api.model.dto.ArtistPostDto;
 import cz.cvut.fit.tjv.art_commissions.app.business.ArtistService;
 import cz.cvut.fit.tjv.art_commissions.app.business.CommissionService;
 import cz.cvut.fit.tjv.art_commissions.app.domain.Artist;
+import cz.cvut.fit.tjv.art_commissions.app.exceptions.ArtistException;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -34,6 +35,9 @@ public class ArtistConverter extends AbstractConverter<Artist, ArtistDto, Artist
 
     @Override
     public Artist fromPostDtoToEntity(ArtistPostDto dto) {
+        if (artistService.readById(dto.getTeacher()).isEmpty())
+            throw new ArtistException("An artist cannot have a teacher with a nonexistent ID");
+
         return new Artist(dto.getName(), dto.getPricePerHour(), dto.getArtType(),
                 artistService.readById(dto.getTeacher()).orElse(null),
                 artistService.readById(dto.getApprentices()), commissionService.readById(dto.getCommissions()));
