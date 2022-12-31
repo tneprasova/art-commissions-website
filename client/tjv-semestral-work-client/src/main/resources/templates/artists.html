@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Art Commissions</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link th:href="@{/css/bootstrap.css}" rel="stylesheet">
+    <link th:href="@{/css/custom.css}" rel="stylesheet">
+    <link href="/static/css/bootstrap.css" rel="stylesheet">
+    <link href="/static/css/custom.css" rel="stylesheet">
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand-left">Art</a><a class="navbar-brand-middle">Co</a><a class="navbar-brand-right">Missions</a>
+        <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/Commission">All Commissions</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="/Artist">Browse Artists</a>
+            </li>
+        </ul>
+        <a>Order a unique piece of art from artists all around the world</a>
+        <a href="http://localhost:8080/swagger-ui/index.html">
+            <button type="button" class="btn btn-success api-btn">
+                API
+            </button>
+        </a>
+    </div>
+</nav>
+
+<h1 class="headline-with-filters">Artists</h1>
+<div class="input-group mb-3">
+    <div class="accordion filter-dropdown" id="accordionFilters">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+                <button onclick="changeClass()" class="accordion-button collapsed" id="filtersButton" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFilters" aria-expanded="false" aria-controls="collapseFilters">
+                    Filters
+                </button>
+            </h2>
+            <div id="collapseFilters" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionFilters" style="">
+                <div class="accordion-body">
+                    <form th:action="@{/Artist}">
+                        <fieldset>
+                            <div class="form-group">
+                                <label for="artistNameFilter" class="form-label mt-4">Select artist's name</label>
+                                <input type="text" th:name="artistName" class="form-control" id="artistNameFilter" aria-describedby="nameHelp searchButton" placeholder="Enter Name">
+                                <small id="nameHelp" class="form-text text-muted">The search is exact and case-sensitive.</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="artTypeSelect" class="form-label mt-4">Select art type specialization</label>
+                                <select th:name="art_type" class="form-select" id="artTypeSelect" aria-describedby="searchButton">
+                                    <option value="any">Any</option>
+                                    <option value="SKETCHING">Sketching</option>
+                                    <option value="WATERCOLOR_PAINTING">Watercolor painting</option>
+                                    <option value="ACRYLIC_PAINTING">Acrylic painting</option>
+                                    <option value="DIGITAL_ART">Digital art</option>
+                                    <option value="MUSIC_COMPOSING">Music composing</option>
+                                    <option value="WRITING">Writing</option>
+                                    <option value="SONG_WRITING">Song writing</option>
+                                    <option value="SCULPTURING">Sculpturing</option>
+                                    <option value="CROCHETING">Crocheting</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="orderSelect" class="form-label mt-4">Select ascending ordering</label>
+                                <select th:name="order_by" class="form-select" id="orderSelect" aria-describedby="searchButton">
+                                    <option value="none">None</option>
+                                    <option value="price">Artist's price</option>
+                                    <option value="activeCount">Number of active commissions</option>
+                                </select>
+                            </div>
+                            <button id="searchButton" type="submit" class="btn btn-primary search-btn">Search</button>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form th:action="@{/Artist}">
+        <button class="btn btn-primary filter-reset-btn" type="submit">Clear Filters</button>
+    </form>
+</div>
+
+<table class="table table-hover table-resize">
+    <thead>
+    <tr class="table-primary">
+        <th scope="col">Name</th>
+        <th scope="col">Art Type</th>
+        <th scope="col">Price Per Hour</th>
+        <th scope="col">Active Commissions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr class="table-light" th:each="artist : ${allArtists}">
+        <td th:text="${artist.getName()}">Artist's Name</td>
+        <td th:text="${artist.getArtType()}">Art Type</td>
+        <td th:text="${artist.getPricePerHour() + ' CZE'}">Price</td>
+        <td >TODO</td>
+    </tr>
+    </tbody>
+</table>
+
+
+<script>
+    function changeClass() {
+        document.getElementById("filtersButton").classList.toggle('collapsed');
+        document.getElementById("collapseFilters").classList.toggle('show');
+    }
+</script>
+
+</body>
+</html>

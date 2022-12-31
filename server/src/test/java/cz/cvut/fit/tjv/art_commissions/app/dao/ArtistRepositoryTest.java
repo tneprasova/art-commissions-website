@@ -48,37 +48,37 @@ class ArtistRepositoryTest {
         // After each added commission to the database, test the function
         Commission comm1 = new Commission(ArtType.DIGITAL_ART, "", 2, LocalDate.now(), customer, Set.of(artist1, artist2));
         commissionRepository.save(comm1);
-        List<Long> returnValues =  artistRepository.readAllByActiveCommissionsToDateAsc(LocalDate.now()).stream().map(Artist::getId).toList();
+        List<Long> returnValues =  artistRepository.readAllByActiveCommissionsToDateAsc(LocalDate.now()).stream().toList();
         List<Long> expectedValues = List.of(3L, 4L, 1L, 2L);
         Assertions.assertEquals(expectedValues, returnValues);
 
         Commission comm2 = new Commission(ArtType.DIGITAL_ART, "", 2, LocalDate.now().minusDays(3), customer, Set.of(artist3, artist2));
         commissionRepository.save(comm2);
-        returnValues =  artistRepository.readAllByActiveCommissionsToDateAsc(LocalDate.now()).stream().map(Artist::getId).toList();
+        returnValues =  artistRepository.readAllByActiveCommissionsToDateAsc(LocalDate.now()).stream().toList();
         expectedValues = List.of(3L, 4L, 1L, 2L);
         Assertions.assertEquals(expectedValues, returnValues);
-        returnValues =  artistRepository.readAllByActiveCommissionsToDateAsc(LocalDate.now().minusDays(3)).stream().map(Artist::getId).toList();
+        returnValues =  artistRepository.readAllByActiveCommissionsToDateAsc(LocalDate.now().minusDays(3)).stream().toList();
         expectedValues = List.of(1L, 4L, 2L, 3L);
         Assertions.assertEquals(expectedValues, returnValues);
 
         Commission comm3 = new Commission(ArtType.DIGITAL_ART, "", 2, LocalDate.now().plusDays(2), customer, Set.of(artist4));
         commissionRepository.save(comm3);
-        returnValues =  artistRepository.readAllByActiveCommissionsToDateAsc(LocalDate.now()).stream().map(Artist::getId).toList();
+        returnValues =  artistRepository.readAllByActiveCommissionsToDateAsc(LocalDate.now()).stream().toList();
         expectedValues = List.of(3L, 4L, 1L, 2L);
         Assertions.assertEquals(expectedValues, returnValues);
 
         Commission comm4 = new Commission(ArtType.DIGITAL_ART, "", 2, LocalDate.now(), customer, Set.of(artist1));
         commissionRepository.save(comm4);
-        returnValues =  artistRepository.readAllByActiveCommissionsToDateAsc(LocalDate.now()).stream().map(Artist::getId).toList();
+        returnValues =  artistRepository.readAllByActiveCommissionsToDateAsc(LocalDate.now()).stream().toList();
         expectedValues = List.of(3L, 4L, 2L, 1L);
         Assertions.assertEquals(expectedValues, returnValues);
 
         Commission comm5 = new Commission(ArtType.DIGITAL_ART, "", 2, LocalDate.now(), customer, Set.of(artist1, artist4));
         commissionRepository.save(comm5);
-        returnValues =  artistRepository.readAllByActiveCommissionsToDateAsc(LocalDate.now()).stream().map(Artist::getId).toList();
+        returnValues =  artistRepository.readAllByActiveCommissionsToDateAsc(LocalDate.now()).stream().toList();
         expectedValues = List.of(3L, 2L, 4L, 1L);
         Assertions.assertEquals(expectedValues, returnValues);
-        returnValues =  artistRepository.readAllByActiveCommissionsToDateAsc(LocalDate.now().plusDays(10)).stream().map(Artist::getId).toList();
+        returnValues =  artistRepository.readAllByActiveCommissionsToDateAsc(LocalDate.now().plusDays(10)).stream().toList();
         expectedValues = List.of(1L, 2L, 3L, 4L);
         Assertions.assertEquals(expectedValues, returnValues);
     }

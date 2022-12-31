@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Art Commissions</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link th:href="@{/css/bootstrap.css}" rel="stylesheet">
+  <link th:href="@{/css/custom.css}" rel="stylesheet">
+  <link href="/static/css/bootstrap.css" rel="stylesheet">
+  <link href="/static/css/custom.css" rel="stylesheet">
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container-fluid">
+    <a class="navbar-brand-left">Art</a><a class="navbar-brand-middle">Co</a><a class="navbar-brand-right">Missions</a>
+    <ul class="navbar-nav me-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="/">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/Commission">All Commissions</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/Artist">Browse Artists</a>
+      </li>
+    </ul>
+    <a>Order a unique piece of art from artists all around the world</a>
+    <a href="http://localhost:8080/swagger-ui/index.html">
+      <button type="button" class="btn btn-success api-btn">
+        API
+      </button>
+    </a>
+  </div>
+</nav>
+
+<h1 class="create-commission-headline">Edit a Commission</h1>
+
+<div th:if="${error}" id="alertDialog" class="alert alert-dismissible alert-danger create-warning show">
+  <button type="button" class="btn-close" data-bs-dismiss="alert" onclick="alertChange()"></button>
+  <h4 class="alert-heading">Warning!</h4>
+  <p class="mb-0" th:text="${errorMessage}">Error Message</p>
+</div>
+
+<form class="create-commission-form" th:action="@{'/Commission/edit?id=' + ${customer.getId()}}" method="post" th:object="${commission}">
+  <fieldset>
+    <input type="hidden" th:field="*{id}">
+    <input type="hidden" th:field="*{issuingDate}">
+    <input type="hidden" th:field="*{estimatedEndDate}">
+    <input type="hidden" th:field="*{price}">
+    <input type="hidden" th:field="*{creator}">
+    <input type="hidden" th:field="*{commissioners}">
+    <input type="hidden" th:field="*{artType}">
+    <div class="form-group">
+      <fieldset disabled="">
+        <label class="form-label disabled-input-margin" for="disabledCreator">Creator's name</label>
+        <input th:placeholder="${customer.getName()}" class="form-control" id="disabledCreator" type="text" placeholder="Creator's name" disabled="">
+      </fieldset>
+    </div>
+    <div class="form-group">
+      <fieldset disabled="">
+        <label class="form-label disabled-input-margin" for="disabledArtType">The art type of the commission</label>
+        <input th:placeholder="${commission.getArtTypeFormated()}" class="form-control" id="disabledArtType" type="text" placeholder="Art type" disabled="">
+      </fieldset>
+    </div>
+    <div class="form-group">
+      <label for="descriptionInput" class="form-label mt-4">Describe your desired art piece</label>
+      <textarea th:field="*{description}" class="form-control" id="descriptionInput" rows="3"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="hoursInput" class="form-label mt-4">Duration</label>
+      <input th:field="*{estimatedHours}" type="number" class="form-control" id="hoursInput" aria-describedby="hoursHelp" placeholder="Enter estimated duration in hours">
+      <small id="hoursHelp" class="form-text text-muted">The price of the art piece will compute itself accordingly</small>
+    </div>
+    <div class="form-group">
+      <fieldset disabled="">
+        <label class="form-label disabled-input-margin" for="disabledCommissioner">An artist who will carry out your commission</label>
+        <input th:placeholder="${artist.getName() + ' | ' + artist.getArtType().replace('_', ' ').toLowerCase() + ' | ' + artist.getPricePerHour() + ' CZE'}"
+               class="form-control" id="disabledCommissioner" type="text" placeholder="Commissioner" disabled="">
+        <small class="form-text text-muted">Artist's name | Art type specialization | Price per hour</small>
+      </fieldset>
+    </div>
+    <button type="submit" class="btn btn-primary create-commission-btn" id="createBtn">Edit</button>
+  </fieldset>
+</form>
+
+<script>
+  function alertChange() {
+    document.getElementById('alertDialog').classList.toggle('show');
+    document.getElementById('alertDialog').classList.toggle('hide');
+  }
+</script>
+</body>
+</html>

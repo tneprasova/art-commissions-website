@@ -31,6 +31,10 @@ public abstract class AbstractCrudController<Entity extends DomainEntity<ID>, DT
 
     @GetMapping("/{id}")
     @ResponseBody
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "404", description = "Attempt to read a nonexistent entity")}
+    )
     public DTO readById(@PathVariable ID id) {
         return service.readById(id).map(entity -> converter.fromEntityToDto(entity)).orElseThrow(EntityDoesNotExistException::new);
     }

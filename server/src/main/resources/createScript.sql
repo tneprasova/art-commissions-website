@@ -1,4 +1,6 @@
 -- This script serves only for manual reinitialization of the database
+-- The artist table was designed using the code from the following website
+-- https://www.codeproject.com/Tips/5255964/How-to-Create-and-Use-a-Self-referencing-Hierarchi
 
 -- Remove conflicting tables
 DROP TABLE IF EXISTS commission_artist;
