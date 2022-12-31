@@ -24,17 +24,27 @@ public class CommissionController {
     private final Map<Long, String> creatorsNames = new HashMap<>();
     private final Map<Long, String> artistsNames = new HashMap<>();
 
+    private final boolean allSet;
+
     public CommissionController(CommissionService commissionService, CustomerService customerService, ArtistService artistService) {
         this.commissionService = commissionService;
         this.customerService = customerService;
         this.artistService = artistService;
-        customerService.readAll().forEach(c -> creatorsNames.put(c.getId(), c.getName()));
-        artistService.readAll(Optional.empty(), Optional.empty(), Optional.empty()).forEach(
-                a -> artistsNames.put(a.getId(), a.getName()));
+        this.allSet = false;
+    }
+
+    public void setup() {
+        if (!allSet) {
+            customerService.readAll().forEach(c -> creatorsNames.put(c.getId(), c.getName()));
+            artistService.readAll(Optional.empty(), Optional.empty(), Optional.empty()).forEach(
+                    a -> artistsNames.put(a.getId(), a.getName()));
+        }
     }
 
     @GetMapping
     public String listCommissions(Model model) {
+        setup();
+
         model.addAttribute("creatorsNames", creatorsNames);
         model.addAttribute("artistsNames", artistsNames);
         model.addAttribute("allCommissions", commissionService.readAll());
@@ -44,6 +54,8 @@ public class CommissionController {
 
     @GetMapping("/MyCommissions")
     public String listMyCommissions(@RequestParam Long id, Model model) {
+        setup();
+
         model.addAttribute("creatorsNames", creatorsNames);
         model.addAttribute("artistsNames", artistsNames);
         model.addAttribute("allCommissions", commissionService.readMyCommissions(id, Optional.empty()));

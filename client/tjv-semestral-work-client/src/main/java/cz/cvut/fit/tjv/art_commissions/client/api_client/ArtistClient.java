@@ -42,4 +42,8 @@ public class ArtistClient {
         else
             throw new RuntimeException(response.getStatusInfo().getReasonPhrase());
     }
+
+//    public Collection<ArtistDto> readCoworkers(Long id) {
+//
+//    }
 }
