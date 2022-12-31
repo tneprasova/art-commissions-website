@@ -13,11 +13,8 @@ import java.util.Collection;
 @Repository
 public interface ArtistRepository extends CrudRepository<Artist, Long>, JpaRepository<Artist, Long> {
     @Query(value =
-            "SELECT a FROM Artist a " +
-                    "LEFT JOIN a.commissions c " +
-                    "GROUP BY a.id " +
-                    "ORDER BY SUM(CASE WHEN c.estimatedEndDate >= :date AND c.issuingDate <= :date THEN 1 ELSE 0 END ) ASC, a.id ASC ")
-    Collection<Artist> readAllByActiveCommissionsToDateAsc(@Param("date") LocalDate date);
+            "SELECT a.id FROM Artist a LEFT JOIN a.commissions c GROUP BY a.id ORDER BY SUM(CASE WHEN c.estimatedEndDate >= :date AND c.issuingDate <= :date THEN 1 ELSE 0 END ) ASC, a.id ASC")
+    Collection<Long> readAllByActiveCommissionsToDateAsc(@Param("date") LocalDate date);
 
     @Query (value = "SELECT a FROM Artist a ORDER BY a.pricePerHour ASC")
     Collection<Artist> readAllOrderByPricePerHour();

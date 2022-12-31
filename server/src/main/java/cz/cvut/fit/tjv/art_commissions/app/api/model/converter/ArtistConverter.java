@@ -35,7 +35,7 @@ public class ArtistConverter extends AbstractConverter<Artist, ArtistDto, Artist
 
     @Override
     public Artist fromPostDtoToEntity(ArtistPostDto dto) {
-        if (artistService.readById(dto.getTeacher()).isEmpty())
+        if (artistService.readById(dto.getTeacher()).isEmpty() && dto.getTeacher() != null)
             throw new ArtistException("An artist cannot have a teacher with a nonexistent ID");
 
         return new Artist(dto.getName(), dto.getPricePerHour(), dto.getArtType(),

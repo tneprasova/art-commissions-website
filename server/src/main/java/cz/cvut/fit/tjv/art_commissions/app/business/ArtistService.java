@@ -11,6 +11,7 @@ import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.List;
 
 @Service
 @Transactional
@@ -26,7 +27,8 @@ public class ArtistService extends AbstractCrudService<Artist, Long> {
     }
 
     public Collection<Artist> orderByActiveCommissionsToDate(LocalDate date) {
-        return ((ArtistRepository) repository).readAllByActiveCommissionsToDateAsc(date);
+        List<Long> artistIds = ((ArtistRepository) repository).readAllByActiveCommissionsToDateAsc(date).stream().toList();
+        return artistIds.stream().map(id -> readById(id).get()).toList();
     }
 
     public Collection<Artist> orderByPrice() {
