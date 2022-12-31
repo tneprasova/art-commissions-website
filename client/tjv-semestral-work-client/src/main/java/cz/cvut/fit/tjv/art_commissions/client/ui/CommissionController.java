@@ -1,6 +1,7 @@
 package cz.cvut.fit.tjv.art_commissions.client.ui;
 
 import cz.cvut.fit.tjv.art_commissions.client.api_client.ApiException;
+import cz.cvut.fit.tjv.art_commissions.client.dto.ArtistDto;
 import cz.cvut.fit.tjv.art_commissions.client.dto.CommissionDto;
 import cz.cvut.fit.tjv.art_commissions.client.dto.CommissionPostDto;
 import cz.cvut.fit.tjv.art_commissions.client.service.ArtistService;
@@ -11,9 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 @RequestMapping("/Commission")
@@ -55,9 +54,7 @@ public class CommissionController {
     @GetMapping("/MyCommissions")
     public String listMyCommissions(@RequestParam Long id, Model model) {
         setup();
-
-        model.addAttribute("creatorsNames", creatorsNames);
-        model.addAttribute("artistsNames", artistsNames);
+        mainPageSetUp(model);
         model.addAttribute("allCommissions", commissionService.readMyCommissions(id, Optional.empty()));
         model.addAttribute("customer", customerService.readOneById(id).orElseThrow());
 
@@ -76,10 +73,8 @@ public class CommissionController {
     }
 
     @PostMapping("/create")
-    public String createCommissionSubmit(@RequestParam Long id, @ModelAttribute CommissionPostDto dto, Model model) {
-        model.addAttribute("allArtists", artistService.readAll(Optional.empty(), Optional.empty(), Optional.empty()));
+    public String createCommissionSubmit(@ModelAttribute CommissionPostDto dto, Model model) {
         dto.setIssuingDate(LocalDate.now());
-        dto.setCreator(id);
 
         try {
             commissionService.create(dto);
@@ -98,29 +93,41 @@ public class CommissionController {
             model.addAttribute("error", true);
             model.addAttribute("errorMessage", errorMessage);
             model.addAttribute("commission", dto);
+            model.addAttribute("allArtists", artistService.readAll(Optional.empty(), Optional.empty(), Optional.empty()));
             return "createCommission";
         }
 
-        return listMyCommissions(id, model);
+        mainPageSetUp(model);
+        return "commissions";
     }
 
     @GetMapping("/edit")
     public String editCommission(@RequestParam Long id, Model model) {
         commissionService.setCurrentCommission(id);
         var commission = commissionService.readOne().orElseThrow();
+        List<ArtistDto> commissioners = new ArrayList<>();
+        commission.getCommissioners().forEach(c -> commissioners.add(artistService.readOneById(c).orElseThrow()));
 
         model.addAttribute("commission", commission);
+        model.addAttribute("newCoworkerId", new long[0]);
         model.addAttribute("artist", artistService.readOneById(commission.getCommissioners().iterator().next()).orElseThrow());
         model.addAttribute("customer", customerService.readOneById(commission.getCreator()).orElseThrow());
+        model.addAttribute("coworkers", commissionService.readCoworkers(commission.getId()));
+        model.addAttribute("commissioners", commissioners);
 
         return "editCommission";
     }
 
     @PostMapping("/edit")
-    public String editCommissionSubmit(@RequestParam Long id, @ModelAttribute CommissionDto dto, Model model) {
-        model.addAttribute("allArtists", artistService.readAll(Optional.empty(), Optional.empty(), Optional.empty()));
+    public String editCommissionSubmit(@RequestParam Long id, @RequestParam(value = "newCoworkerId") Long newCoworkerId, @ModelAttribute CommissionDto dto, Model model) {
         commissionService.setCurrentCommission(dto.getId());
         dto.setArtType(dto.getArtTypeFormated());
+
+        if (newCoworkerId != 0) {
+            var newCoworkers = dto.getCommissioners();
+            newCoworkers.add(newCoworkerId);
+            dto.setCommissioners(newCoworkers);
+        }
 
         try {
             commissionService.update(dto);
@@ -135,9 +142,20 @@ public class CommissionController {
             model.addAttribute("error", true);
             model.addAttribute("errorMessage", errorMessage);
             model.addAttribute("commission", dto);
+            model.addAttribute("coworkers", commissionService.readCoworkers(id));
             return editCommission(id, model);
         }
 
-        return listMyCommissions(id, model);
+        mainPageSetUp(model);
+        return "commissions";
+    }
+
+    public void mainPageSetUp(Model model) {
+        setup();
+
+        model.addAttribute("allArtists", artistService.readAll(Optional.empty(), Optional.empty(), Optional.empty()));
+        model.addAttribute("creatorsNames", creatorsNames);
+        model.addAttribute("artistsNames", artistsNames);
+        model.addAttribute("allCommissions", commissionService.readAll());
     }
 }

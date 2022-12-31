@@ -18,7 +18,7 @@ public class ArtistDto {
     private Long teacher;
     private Collection<Long> apprentices;
 
-    public String getArtType() {
+    public String getArtTypeFormated() {
         var leadingChar = String.valueOf(artType.charAt(0));
         return artType.toLowerCase().replace("_", " ").replaceFirst("^.", leadingChar);
     }

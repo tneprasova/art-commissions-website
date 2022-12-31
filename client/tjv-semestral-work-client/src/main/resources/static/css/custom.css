@@ -94,3 +94,7 @@ table tbody tr:hover td > .hide {
 .disabled-input-margin {
     margin-top: 1.5rem;
 }
+
+.add-coworker-window {
+    width: 150%;
+}

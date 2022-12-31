@@ -7,9 +7,7 @@ import jakarta.ws.rs.core.MediaType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 public class ArtistClient {
@@ -42,8 +40,4 @@ public class ArtistClient {
         else
             throw new RuntimeException(response.getStatusInfo().getReasonPhrase());
     }
-
-//    public Collection<ArtistDto> readCoworkers(Long id) {
-//
-//    }
 }

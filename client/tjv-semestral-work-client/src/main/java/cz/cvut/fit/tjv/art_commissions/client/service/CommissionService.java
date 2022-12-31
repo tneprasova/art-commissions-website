@@ -1,6 +1,7 @@
 package cz.cvut.fit.tjv.art_commissions.client.service;
 
 import cz.cvut.fit.tjv.art_commissions.client.api_client.CommissionClient;
+import cz.cvut.fit.tjv.art_commissions.client.dto.ArtistDto;
 import cz.cvut.fit.tjv.art_commissions.client.dto.CommissionDto;
 import cz.cvut.fit.tjv.art_commissions.client.dto.CommissionPostDto;
 import org.springframework.stereotype.Service;
@@ -50,5 +51,9 @@ public class CommissionService {
 
     public Collection<CommissionDto> readMyCommissions(Long id, Optional<String> filter_by) {
         return commissionClient.getMyCommissions(id, filter_by);
+    }
+
+    public Collection<ArtistDto> readCoworkers(long commissionId) {
+        return commissionClient.readCoworkers(commissionId);
     }
 }

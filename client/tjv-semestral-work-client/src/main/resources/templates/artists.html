@@ -94,15 +94,13 @@
         <th scope="col">Name</th>
         <th scope="col">Art Type</th>
         <th scope="col">Price Per Hour</th>
-        <th scope="col">Active Commissions</th>
     </tr>
     </thead>
     <tbody>
     <tr class="table-light" th:each="artist : ${allArtists}">
         <td th:text="${artist.getName()}">Artist's Name</td>
-        <td th:text="${artist.getArtType()}">Art Type</td>
+        <td th:text="${artist.getArtTypeFormated()}">Art Type</td>
         <td th:text="${artist.getPricePerHour() + ' CZE'}">Price</td>
-        <td >TODO</td>
     </tr>
     </tbody>
 </table>

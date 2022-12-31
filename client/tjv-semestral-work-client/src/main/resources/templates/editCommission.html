@@ -43,9 +43,10 @@
   <p class="mb-0" th:text="${errorMessage}">Error Message</p>
 </div>
 
-<form class="create-commission-form" th:action="@{'/Commission/edit?id=' + ${customer.getId()}}" method="post" th:object="${commission}">
+<form class="create-commission-form"
+      th:action="@{'/Commission/edit'}" method="post" th:object="${commission}">
   <fieldset>
-    <input type="hidden" th:field="*{id}">
+    <input type="hidden" th:field="*{id}" th:name="id" id="id">
     <input type="hidden" th:field="*{issuingDate}">
     <input type="hidden" th:field="*{estimatedEndDate}">
     <input type="hidden" th:field="*{price}">
@@ -75,13 +76,30 @@
     </div>
     <div class="form-group">
       <fieldset disabled="">
-        <label class="form-label disabled-input-margin" for="disabledCommissioner">An artist who will carry out your commission</label>
-        <input th:placeholder="${artist.getName() + ' | ' + artist.getArtType().replace('_', ' ').toLowerCase() + ' | ' + artist.getPricePerHour() + ' CZE'}"
-               class="form-control" id="disabledCommissioner" type="text" placeholder="Commissioner" disabled="">
+        <label class="form-label disabled-input-margin" for="disabledCommissioners">Artist's who will carry out your commission</label>
+        <label for="disabledCommissioner"></label>
+        <div id="disabledCommissioners" th:each="commissioner : ${commissioners}">
+          <input th:placeholder="${commissioner.getName() + ' | ' + commissioner.getArtTypeFormated().replace('_', ' ').toLowerCase() + ' | ' + commissioner.getPricePerHour() + ' CZE'}"
+                 class="form-control" id="disabledCommissioner" type="text" placeholder="Commissioner" disabled="">
+        </div>
         <small class="form-text text-muted">Artist's name | Art type specialization | Price per hour</small>
       </fieldset>
     </div>
-    <button type="submit" class="btn btn-primary create-commission-btn" id="createBtn">Edit</button>
+    <div class="form-group">
+      <label for="newCoworkerId" class="form-label mt-4">Select another artist, who will help working on the commission</label>
+      <select th:name="newCoworkerId" class="form-select" id="newCoworkerId" aria-describedby="createBtn">
+        <option th:value="${0}">None</option>
+        <option th:each="coworker : ${coworkers}"
+                th:value="${coworker.getId()}"
+                th:text="${coworker.getName() + ' | ' + coworker.getArtType().replace('_', ' ').toLowerCase() + ' | ' + coworker.getPricePerHour() + ' CZE'}">
+          Artist's Name
+        </option>
+      </select>
+      <small class="form-text text-muted">Artist's name | Art type specialization | Price per hour</small>
+    </div>
+    <a th:href="@{'/Commission'}">
+      <button type="submit" class="btn btn-primary create-commission-btn" id="createBtn">Edit</button>
+    </a>
   </fieldset>
 </form>
 

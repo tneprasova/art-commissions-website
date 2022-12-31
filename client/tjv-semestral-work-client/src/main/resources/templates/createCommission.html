@@ -43,8 +43,9 @@
   <p class="mb-0" th:text="${errorMessage}">Error Message</p>
 </div>
 
-<form class="create-commission-form" th:action="@{'/Commission/create?id=' + ${customerId}}" method="post" th:object="${commission}">
+<form class="create-commission-form" th:action="@{'/Commission/create'}" method="post" th:object="${commission}">
   <fieldset>
+  <input type="hidden" th:field="*{creator}" th:value="${customerId}">
     <div class="form-group">
       <label for="artTypeSelect" class="form-label mt-4">Select the art type of your commission</label>
       <select th:field="*{artType}" class="form-select" id="artTypeSelect" aria-describedby="createBtn">
@@ -75,13 +76,15 @@
         <option th:value="${null}">None</option>
         <option th:each="artist : ${allArtists}"
                 th:value="${artist.getId()}"
-                th:text="${artist.getName() + ' | ' + artist.getArtType().replace('_', ' ').toLowerCase() + ' | ' + artist.getPricePerHour() + ' CZE'}">
+                th:text="${artist.getName() + ' | ' + artist.getArtTypeFormated().replace('_', ' ').toLowerCase() + ' | ' + artist.getPricePerHour() + ' CZE'}">
           Artist's Name
         </option>
       </select>
       <small class="form-text text-muted">Artist's name | Art type specialization | Price per hour</small>
     </div>
-    <button type="submit" class="btn btn-primary create-commission-btn" id="createBtn">Create</button>
+    <a th:href="@{'/Commission'}">
+      <button type="submit" class="btn btn-primary create-commission-btn" id="createBtn">Create</button>
+    </a>
   </fieldset>
 </form>
 
