@@ -1,0 +1,19 @@
+version: '3.7'
+services:
+  server:
+    image: cz.cvut.fit.tjv.art_commissions.app.snapi
+    ports:
+      - '8080:8080'
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:sqlserver://cvut-neprater-tjv-semestral.database.windows.net:1433;database=art_commissions_db;user=tjvadmin@cvut-neprater-tjv-semestral;password={your_password_here};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;
+      SPRING_DATASOURCE_USERNAME: tjvadmin
+      SPRING_DATASOURCE_PASSWORD: Password123
+
+  client:
+    image: cz.cvut.fit.tjv.art_commissions.app.sclient
+    depends_on:
+      - server
+    ports:
+      - '8081:8081'
+    environment:
+      server.url: http://server:8080
