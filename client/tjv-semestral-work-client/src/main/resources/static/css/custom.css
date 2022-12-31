@@ -1,0 +1,96 @@
+/*:root {*/
+/*    --bs-font-sans-serif: "Nunito Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";*/
+/*    --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;*/
+/*    --bs-body-font-family: var(--bs-font-sans-serif);*/
+/*    --bs-body-font-size: 1rem;*/
+/*    --bs-body-font-weight: 400;*/
+/*}*/
+
+
+/*.middleName {*/
+/*    font-family: var(--bs-body-font-family);*/
+/*    color: #4d4d4d;*/
+/*    text-transform: uppercase;*/
+/*    font-size: 1.25rem;*/
+/*    font-weight: 600;*/
+/*    padding-top: 0.25rem;*/
+/*    padding-bottom: 0.25rem;*/
+/*}*/
+
+.hide {
+    display: none;
+}
+
+.show {
+    display: block;
+}
+
+table tbody tr:hover td > .show {
+    display: none;
+}
+
+table tbody tr:hover td > .hide {
+    display: block;
+}
+
+.headline-with-filters {
+    margin-left: 1rem;
+    margin-top: 5rem;
+}
+
+.headline {
+    margin-left: 1rem;
+    margin-top: 5rem;
+    margin-bottom: 2rem;
+}
+
+.table-resize {
+    margin-left: 1rem;
+    width: 98.5%;
+}
+
+.filter-dropdown {
+    margin-left: 1rem;
+    width: 15%;
+}
+
+.filter-reset-btn {
+    margin-left: 1rem;
+}
+
+.search-btn {
+    margin-top: 1rem;
+}
+
+.add-button {
+    margin-left: 1rem;
+
+}
+
+.create-commission-form {
+    margin-left: 5rem;
+    width: 25%;
+}
+
+.create-commission-headline {
+    margin-top: 5rem;
+    margin-left: 5rem;
+}
+
+.create-commission-btn {
+    margin-top: 2rem;
+}
+
+.create-warning {
+    margin-left: 5rem;
+    width: 25%;
+}
+
+.api-btn {
+    margin-left: 3rem;
+    margin-right: 1rem;
+}
+
+.disabled-input-margin {
+    margin-top: 1.5rem;
+}

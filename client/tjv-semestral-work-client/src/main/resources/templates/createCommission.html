@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Art Commissions</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link th:href="@{/css/bootstrap.css}" rel="stylesheet">
+  <link th:href="@{/css/custom.css}" rel="stylesheet">
+  <link href="/static/css/bootstrap.css" rel="stylesheet">
+  <link href="/static/css/custom.css" rel="stylesheet">
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container-fluid">
+    <a class="navbar-brand-left">Art</a><a class="navbar-brand-middle">Co</a><a class="navbar-brand-right">Missions</a>
+    <ul class="navbar-nav me-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="/">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/Commission">All Commissions</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/Artist">Browse Artists</a>
+      </li>
+    </ul>
+    <a>Order a unique piece of art from artists all around the world</a>
+    <a href="http://localhost:8080/swagger-ui/index.html">
+      <button type="button" class="btn btn-success api-btn">
+        API
+      </button>
+    </a>
+  </div>
+</nav>
+
+<h1 class="create-commission-headline">Create a Commission</h1>
+
+<div th:if="${error}" id="alertDialog" class="alert alert-dismissible alert-danger create-warning show">
+  <button type="button" class="btn-close" data-bs-dismiss="alert" onclick="alertChange()"></button>
+  <h4 class="alert-heading">Warning!</h4>
+  <p class="mb-0" th:text="${errorMessage}">Error Message</p>
+</div>
+
+<form class="create-commission-form" th:action="@{'/Commission/create?id=' + ${customerId}}" method="post" th:object="${commission}">
+  <fieldset>
+    <div class="form-group">
+      <label for="artTypeSelect" class="form-label mt-4">Select the art type of your commission</label>
+      <select th:field="*{artType}" class="form-select" id="artTypeSelect" aria-describedby="createBtn">
+        <option th:value="${null}">None</option>
+        <option value="SKETCHING">Sketching</option>
+        <option value="WATERCOLOR_PAINTING">Watercolor painting</option>
+        <option value="ACRYLIC_PAINTING">Acrylic painting</option>
+        <option value="DIGITAL_ART">Digital art</option>
+        <option value="MUSIC_COMPOSING">Music composing</option>
+        <option value="WRITING">Writing</option>
+        <option value="SONG_WRITING">Song writing</option>
+        <option value="SCULPTURING">Sculpturing</option>
+        <option value="CROCHETING">Crocheting</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="descriptionInput" class="form-label mt-4">Describe your desired art piece</label>
+      <textarea th:field="*{description}" class="form-control" id="descriptionInput" rows="3"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="hoursInput" class="form-label mt-4">Duration</label>
+      <input th:field="*{estimatedHours}" type="number" class="form-control" id="hoursInput" aria-describedby="hoursHelp" placeholder="Enter estimated duration in hours">
+      <small id="hoursHelp" class="form-text text-muted">The price of the art piece will compute itself accordingly</small>
+    </div>
+    <div class="form-group">
+      <label for="commissionerSelect" class="form-label mt-4">Select an artist who will carry out your commission</label>
+      <select th:field="*{commissioners}" class="form-select" id="commissionerSelect" aria-describedby="createBtn">
+        <option th:value="${null}">None</option>
+        <option th:each="artist : ${allArtists}"
+                th:value="${artist.getId()}"
+                th:text="${artist.getName() + ' | ' + artist.getArtType().replace('_', ' ').toLowerCase() + ' | ' + artist.getPricePerHour() + ' CZE'}">
+          Artist's Name
+        </option>
+      </select>
+      <small class="form-text text-muted">Artist's name | Art type specialization | Price per hour</small>
+    </div>
+    <button type="submit" class="btn btn-primary create-commission-btn" id="createBtn">Create</button>
+  </fieldset>
+</form>
+
+<script>
+  function alertChange() {
+    document.getElementById('alertDialog').classList.toggle('show');
+    document.getElementById('alertDialog').classList.toggle('hide');
+  }
+</script>
+</body>
+</html>
