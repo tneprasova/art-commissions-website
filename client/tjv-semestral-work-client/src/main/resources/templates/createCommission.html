@@ -45,7 +45,7 @@
 
 <form class="create-commission-form" th:action="@{'/Commission/create'}" method="post" th:object="${commission}">
   <fieldset>
-  <input type="hidden" th:field="*{creator}" th:value="${customerId}">
+  <input type="hidden" th:field="*{creator}">
     <div class="form-group">
       <label for="artTypeSelect" class="form-label mt-4">Select the art type of your commission</label>
       <select th:field="*{artType}" class="form-select" id="artTypeSelect" aria-describedby="createBtn">

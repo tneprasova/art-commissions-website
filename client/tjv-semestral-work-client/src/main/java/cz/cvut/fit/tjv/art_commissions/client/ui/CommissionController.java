@@ -63,11 +63,11 @@ public class CommissionController {
 
     @GetMapping("/create")
     public String createCommission(@RequestParam Long id, Model model) {
-        CommissionPostDto dto = new CommissionPostDto(null, null, null, LocalDate.now(), 1L, null);
+        CommissionPostDto dto = new CommissionPostDto(null, null, null, LocalDate.now(), id, null);
 
         model.addAttribute("allArtists", artistService.readAll(Optional.empty(), Optional.empty(), Optional.empty()));
         model.addAttribute("commission", dto);
-        model.addAttribute("customerId", id);
+//        model.addAttribute("customerId", id);
 
         return "createCommission";
     }
