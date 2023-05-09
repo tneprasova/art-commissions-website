@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'org.flywaydb.flyway' version '9.17.0'
     id 'org.springframework.boot' version '2.7.5'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 }
@@ -20,11 +21,21 @@ repositories {
     mavenCentral()
 }
 
+flyway {
+    url = 'jdbc:postgresql://localhost:5432/tjv_db'
+    user = 'tjv'
+    password = 'tjv'
+    schemas = ['public']
+    locations = ['classpath:db/migration']
+    cleanDisabled = false
+}
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.13'
+    implementation 'org.flywaydb:flyway-core'
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'com.microsoft.sqlserver:mssql-jdbc'
     runtimeOnly 'org.postgresql:postgresql'

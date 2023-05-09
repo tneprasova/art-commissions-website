@@ -1,13 +1,23 @@
 version: '3.7'
 services:
+  postgres:
+    image: postgres:15-alpine
+    restart: always
+    container_name: art_commissions_db
+    environment:
+      - POSTGRES_USER=tjv
+      - POSTGRES_PASSWORD=tjv
+      - POSTGRES_DB=tjv_db
+    ports:
+      - '5432:5432'
+    volumes:
+      - .docker/postgres-data:/var/lib/postgresql/data
   server:
     image: cz.cvut.fit.tjv.art_commissions.app.snapi
+    depends_on:
+      - postgres
     ports:
       - '8080:8080'
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:sqlserver://cvut-neprater-tjv-semestral.database.windows.net:1433;database=art_commissions_db;user=tjvadmin@cvut-neprater-tjv-semestral;password={your_password_here};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;
-      SPRING_DATASOURCE_USERNAME: tjvadmin
-      SPRING_DATASOURCE_PASSWORD: Password123
 
   client:
     image: cz.cvut.fit.tjv.art_commissions.app.sclient

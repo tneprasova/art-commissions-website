@@ -1,12 +1,14 @@
 #! /bin/bash
 
 chmod u+x server/gradlew
-chmod u+x client/tjv-semestral-work-client/gradlew
+chmod u+x client/gradlew
 
+echo "BUILD SERVER"
 cd server
 ./gradlew bootBuildImage
-cd ../client/tjv-semestral-work-client
+echo "BUILD CLIENT"
+cd ../client
 ./gradlew bootBuildImage
-cd ../../
+cd ../
 
-docker-compose -f docker-compose.yml up
+docker-compose up -d
