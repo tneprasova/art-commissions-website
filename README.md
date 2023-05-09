@@ -10,7 +10,7 @@ written using Java and Thymeleaf. The application is built with Gradle and Docke
 The main goals of this project was to learn how to develop an application with layered architecture, the basics of Spring Framework,
 writing REST API and using it, using an SQL database in an app and working with Docker.
 
-For more information about the API, see the api-documentation.yml.
+For more information about the API, see the [API Documentation](https://tneprasova.github.io/art-commissions-website/).
 
 ## Prerequisites
 You need to have Docker installed.
