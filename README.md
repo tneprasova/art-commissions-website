@@ -27,4 +27,9 @@ You will find the application on this address: http://localhost:8081/
 
 ## Conceptual Data Model
 
-![Diagram](art-commissions-diagram.png)
+![Diagram](images/art-commissions-diagram.png)
+
+## Example images of the website
+![User's commissions](images/user-commissions.png)
+![Browse Artists](images/artists.png)
+![Edit a commission](images/edit.png)
